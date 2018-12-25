@@ -12,6 +12,10 @@ let PokemonCollectionResource = createResource(() =>
   fetch('https://pokeapi.co/api/v2/pokemon/').then(res => res.json())
 )
 
+let PokemonMovesCollectionResource = createResource(() =>
+  fetch('https://pokeapi.co/api/v2/move/').then(res => res.json())
+)
+
 function PokemonListItem({ className, component: Component = 'li', ...props }) {
   return (
     <Component
@@ -24,12 +28,28 @@ function PokemonListItem({ className, component: Component = 'li', ...props }) {
 // 5. pull your resource-reading UI into a component
 function PokemonList() {
   return (
-    <ul>
-      {/* 6. read resource data into and from the cache */}
-      {PokemonCollectionResource.read(cache).results.map(pokemon => (
-        <PokemonListItem key={pokemon.name}>{pokemon.name}</PokemonListItem>
-      ))}
-    </ul>
+    <section>
+      <h3>Pokemons:</h3>
+      <ul>
+        {/* 6. read resource data into and from the cache */}
+        {PokemonCollectionResource.read(cache).results.map(({ name }) => (
+          <PokemonListItem key={name}>{name}</PokemonListItem>
+        ))}
+      </ul>
+    </section>
+  )
+}
+
+function PokemonMoves() {
+  return (
+    <section>
+      <h3>Pokemon Moves:</h3>
+      <ul>
+        {PokemonMovesCollectionResource.read(cache).results.map(({ name }) => (
+          <PokemonListItem key={name}>{name}</PokemonListItem>
+        ))}
+      </ul>
+    </section>
   )
 }
 
@@ -46,6 +66,7 @@ function App() {
       {/*    ...and provide a fallback */}
       <Suspense fallback={<div>...loading</div>}>
         <PokemonList />
+        <PokemonMoves />
       </Suspense>
     </div>
   )
